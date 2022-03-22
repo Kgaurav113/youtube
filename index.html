@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youtube</title>
+    <style>
+        #navbar{
+            width: 100%;
+            height: 90px;
+            border: 1px solid rgb(209, 207, 207);
+            display:flex;
+            background-color: antiquewhite;
+        }
+        #search{
+            width: 64%;
+            margin: auto;
+            height: 50px;
+            font-size: 20px;
+            color: rgb(163, 151, 151);
+        }
+        #img{
+            margin-top: 18px;
+            width: 90px;
+            height: 70px;
+            border-radius: 12px;
+        }
+       
+        #video{
+            width: 23%;
+            height: 100%;
+            border: 1px solid black;
+        }
+       
+       #button{
+            height: 56px;
+            width: 100px;
+            margin: auto;
+            margin-left: -200px;
+            font-weight: bold;
+        }
+        #mainPage{
+            display: flex;
+            margin-top: 20px;
+           
+        }
+        #search_result{
+            display: grid;
+            grid-template-columns: repeat(4, 25%);
+            grid-gap: 10px;
+            margin-left: 10px;
+            justify-content: center;
+        }
+       
+        iframe{
+            width: 300px;
+            height: 200px;
+        }
+    </style>
+</head>
+<body onload="mostPopular()">
+    <div id="navbar">
+        <img id="img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY9Y4p9eDSg1Zu8VREncY5JHV93Du97yRG2u8TZDgHeCJBbEdQ-ynRpgB6bJl7ciCre_8&usqp=CAU">
+        <input type="text" placeholder="Search" id="search">
+        <button id="button" onclick="searchVideos()">Search</button>
+      </div>
+<div id="mainPage">
+        <div id="search_result">
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+const mostPopular = async () => {
+
+        try {
+            let inp = document.getElementById(`search`).value;
+
+            let res = await fetch('https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&q=football&chart=mostPopular&regionCode=IN&key=AIzaSyBCTC-Bbb3bhAjifO0Pjv-D7Lp7Al1aNns&maxResults=50')
+            let data = await res.json();
+            console.log(data)
+            let videos = data.items;
+            console.log(videos)
+            appenMostPopular(videos)
+            console.log("data", data)
+        }
+
+
+        catch (err) {
+            console.log("error", err)
+        }
+
+    };
+    var search_result = document.getElementById("search_result");
+
+    const appenMostPopular = (data) => {
+        search_result.innerHTML = null;
+        data.forEach((el) => {
+
+            let div = document.createElement("div");
+            div.style = " width: 150; height: 100;"
+
+            let title = document.createElement("p");
+            title.innerHTML = el.snippet.title;
+            let img = document.createElement("img")
+            img.src = el.snippet.thumbnails.medium.url;
+            img.addEventListener("click", function () {
+                div.innerHTML = null;
+                var navbar = document.getElementById("navbar");
+                var iframe = document.createElement("iframe")
+                iframe.src = `https://www.youtube.com/embed/${el.id.videoId}`;
+
+                iframe.width = "300px";
+                iframe.height = "200px";
+
+                iframe.allow = "fullscreen";
+                div.style = "width:300px; height:300px; margin-bottom:50px"
+
+                div.append(iframe, title);
+
+            });
+
+            div.append(img, title)
+            search_result.append(div)
+
+
+        });
+
+
+    };
+
+    const searchVideos = async () => {
+
+try {
+    let inp = document.getElementById(`search`).value;
+
+    let res = await fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${inp}&key=AIzaSyBCTC-Bbb3bhAjifO0Pjv-D7Lp7Al1aNns&maxResults=20`)
+    let data = await res.json();
+
+    let videos = data.items;
+    console.log(videos)
+    appendVideos(videos)
+}
+
+
+catch (err) {
+    console.log("error", err)
+}
+
+};
+
+var search_result = document.getElementById("search_result");
+
+const appendVideos = (data) => {
+    search_result.innerHTML = null;
+    data.forEach((el) => {
+
+        let div = document.createElement("div");
+        div.style = " width: 150; height: 100;"
+
+        let title = document.createElement("p");
+        title.innerHTML = el.snippet.title;
+        let img = document.createElement("img")
+        img.src = el.snippet.thumbnails.medium.url;
+        img.addEventListener("click", function () {
+            div.innerHTML = null;
+            var navbar = document.getElementById("navbar");
+            var iframe = document.createElement("iframe")
+            iframe.src = `https://www.youtube.com/embed/${el.id.videoId}`;
+
+            iframe.width = "300px";
+            iframe.height = "200px";
+            iframe.allowFullscreen;
+
+            iframe.allow = "fullscreen";
+            div.style = "width:300px; height:300px; margin-bottom:50px"
+
+            div.append(iframe, title);
+
+        });
+
+        div.append(img, title)
+        search_result.append(div)
+
+
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//embed
+// https://www.youtube.com/embed/oyYtsrEW_ys
+
+
+
+
+</script>
